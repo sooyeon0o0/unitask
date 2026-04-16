@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:unitask/app/extensions/sanckbar_extension.dart';
 import 'package:unitask/app/extensions/sized_box_extension.dart';
+import 'package:unitask/app/router/app_page.dart';
 import 'package:unitask/ui/common/label_text_field.dart';
 import 'package:unitask/ui/common/text_divider.dart';
 
@@ -16,14 +19,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20.0), // 좌우 여백 추가 (추천)
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: .min,
           children: [
             const Icon(LucideIcons.graduationCap),
             const Text(
               'UniTask',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: .bold, fontSize: 28),
             ),
 
             const Text('과제 관리를 스마트하게'),
@@ -44,13 +47,16 @@ class _LoginPageState extends State<LoginPage> {
               label: '비밀번호',
               hintText: '000000',
               icon: LucideIcons.lockKeyhole,
+              enableObscure: true,
             ),
 
             // 패스워드 찾기 버튼
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.showSnackbar('곧 기능을 출시합니다!');
+                },
                 child: const Text('비밀번호를 잊으셨나요?'),
               ),
             ),
@@ -64,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {},
                 child: const Text(
                   '로그인',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: .bold),
                 ),
               ),
             ),
@@ -80,7 +86,12 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisSize: .min,
               children: [
                 const Text('계정이 없으신가요?'),
-                TextButton(onPressed: () {}, child: const Text('회원가입')),
+                TextButton(
+                  onPressed: () {
+                    context.pushNamed(AppPage.signup.name);
+                  },
+                  child: const Text('회원가입'),
+                ),
               ],
             ),
           ],

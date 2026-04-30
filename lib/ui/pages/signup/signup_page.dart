@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:unitask/app/extensions/snackbar_extension.dart';
+import 'package:unitask/services/api_service.dart';
 import 'package:unitask/ui/common/label_text_field.dart';
 
 class SignupPage extends StatefulWidget {
@@ -15,6 +18,11 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _passwordController = .new();
   final TextEditingController _passwordConfirmController = .new();
 
+  bool _loading = false;
+
+  void _startLoading() => setState(() => _loading = true);
+  void _stopLoading() => setState(() => _loading = false);
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -25,7 +33,7 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  void _onSignup() {
+  Future<void> _onSignup() async {
     debugPrint('계정 만들기');
 
     final name = _nameController.text;
@@ -33,10 +41,35 @@ class _SignupPageState extends State<SignupPage> {
     final password = _passwordController.text;
     final passwordConfirm = _passwordConfirmController.text;
 
-    debugPrint('이름: $name');
-    debugPrint('이메일: $email');
-    debugPrint('비밀번호: $password');
-    debugPrint('비밀번호 확인: $passwordConfirm');
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      context.showSnackbar('정보가 올바르지 않습니다', isError: true);
+      return;
+    }
+
+    if (password != passwordConfirm) {
+      context.showSnackbar('비밀번호가 일치하지 않습니다.', isError: true);
+      return;
+    }
+
+    _startLoading();
+
+    final signupResult = await ApiService.signup(
+      email: email,
+      password: password,
+      name: name,
+    );
+
+    _stopLoading();
+
+    if (signupResult == null) return;
+
+    if (!signupResult) {
+      if (mounted) {
+        context.showSnackbar('계정 생성에 실패했습니다', isError: true);
+      }
+      return;
+    }
+    if (mounted) context.pop();
   }
 
   @override
@@ -48,42 +81,58 @@ class _SignupPageState extends State<SignupPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          spacing: 25,
-          children: [
-            LabelTextField(
-              controller: _nameController,
-              label: '이름',
-              icon: LucideIcons.userRoundPen,
-            ),
-            LabelTextField(
-              controller: _emailController,
-              label: '이메일',
-              icon: LucideIcons.mail,
-            ),
-            LabelTextField(
-              controller: _passwordController,
-              label: '비밀번호',
-              icon: LucideIcons.lockKeyhole,
-              enableObscure: true,
-            ),
-            LabelTextField(
-              controller: _passwordConfirmController,
-              label: '비밀번호 확인',
-              icon: LucideIcons.lockKeyholeOpen,
-              enableObscure: true,
-            ),
-            SizedBox(
-              width: .infinity,
-              child: ElevatedButton(
-                onPressed: _onSignup,
-                child: const Text(
-                  '계정 만들기',
-                  style: TextStyle(fontSize: 18, fontWeight: .bold),
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 25,
+            children: [
+              //이름
+              LabelTextField(
+                controller: _nameController,
+                label: '이름',
+                icon: LucideIcons.userRoundPen,
+              ),
+
+              //이메일
+              LabelTextField(
+                controller: _emailController,
+                label: '이메일',
+                icon: LucideIcons.mail,
+              ),
+
+              //비밀번호
+              LabelTextField(
+                controller: _passwordController,
+                label: '비밀번호',
+                icon: LucideIcons.lockKeyhole,
+                enableObscure: true,
+              ),
+
+              //비밀번호 확인
+              LabelTextField(
+                controller: _passwordConfirmController,
+                label: '비밀번호 확인',
+                icon: LucideIcons.lockKeyholeOpen,
+                enableObscure: true,
+              ),
+
+              //계정 만들기 버튼
+              SizedBox(
+                width: .infinity,
+                child: ElevatedButton(
+                  onPressed: _onSignup,
+                  child: _loading
+                      ? const SizedBox.square(
+                          dimension: 30,
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
+                      : const Text(
+                          '계정 만들기',
+                          style: TextStyle(fontSize: 18, fontWeight: .bold),
+                        ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

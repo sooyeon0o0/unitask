@@ -12,6 +12,11 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
+      titleTextStyle: TextStyle(
+        fontWeight: .bold,
+        color: Colors.black,
+        fontSize: 24,
+      ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       foregroundColor: Colors.white,
@@ -50,6 +55,11 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: _darkBackground,
       foregroundColor: Colors.white,
+      titleTextStyle: TextStyle(
+        fontWeight: .bold,
+        color: Colors.white,
+        fontSize: 24,
+      ),
     ),
 
     // FloatingActionButton 설정

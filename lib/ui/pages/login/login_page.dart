@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:unitask/app/extensions/sized_box_extension.dart';
 import 'package:unitask/app/extensions/snackbar_extension.dart';
 import 'package:unitask/app/router/app_page.dart';
+import 'package:unitask/services/api_service.dart';
 import 'package:unitask/ui/common/label_text_field.dart';
 import 'package:unitask/ui/common/text_divider.dart';
 
@@ -15,6 +16,41 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _pwController = .new();
+  final _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _pwController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onLogin() async {
+    final email = _emailController.text.trim();
+    final password = _pwController.text.trim();
+
+    // 이메일 및 비밀번호 빈칸 확인
+    if (email.isEmpty || password.isEmpty) {
+      return context.showSnackbar('이메일 또는 비밀번호를 입력해주세요', isError: true);
+    }
+
+    final response = await ApiService.login(email: email, password: password);
+
+    // 로그인 실패 에러 스낵바
+    if (response == null) {
+      if (mounted) {
+        context.showSnackbar('로그인을 실패했습니다.', isError: true);
+      }
+      return;
+    }
+
+    // TODO: 로그인 성공 -> 홈 화면으로 이동
+    if (mounted) {
+      context.goNamed(AppPage.home.name);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                 50.heightBox,
 
                 // 이메일 입력창
-                const LabelTextField(
+                LabelTextField(
+                  controller: _emailController,
                   label: '이메일',
                   hintText: 'example@university.deu',
                   icon: LucideIcons.mail,
@@ -45,7 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                 20.heightBox,
 
                 // 비밀번호 입력창
-                const LabelTextField(
+                LabelTextField(
+                  controller: _pwController,
                   label: '비밀번호',
                   hintText: '000000',
                   icon: LucideIcons.lockKeyhole,
@@ -69,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   width: .infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _onLogin,
                     child: const Text(
                       '로그인',
                       style: TextStyle(fontSize: 18, fontWeight: .bold),

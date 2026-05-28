@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:unitask/app/theme/preview.dart';
+
+@AppThemePreview(group: 'UI 확인', name: 'Chip')
+Widget get chipPreview => const Chip(label: Text('전체'));
+
+///
+/// 앱 테마
+/// - LIGHT
+/// - DARK
 
 class AppTheme {
   static const Color _primaryColor = Color(0xFF3B82F6);

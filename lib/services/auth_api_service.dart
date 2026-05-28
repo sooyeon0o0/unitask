@@ -9,7 +9,6 @@ import 'package:unitask/models/auth_data.dart';
 class AuthApiService {
   final String _signupUrl = '${AppStrings.apiHostUrl}/students/signup';
   final String _loginUrl = '${AppStrings.apiHostUrl}/students/login';
-
   Future<Result<void>> signup({
     required String email,
     required String password,
@@ -22,6 +21,7 @@ class AuthApiService {
         body: jsonEncode({'email': email, 'password': password, 'name': name}),
       ); //url의 타입이 uri라 파싱
       final statusCode = response.statusCode;
+      debugPrint('Response[$statusCode]: ${response.body}');
 
       if (response.statusCode != 200) {
         return Failure(Exception('계정 생성을 실패했습니다.'));

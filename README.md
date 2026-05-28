@@ -32,3 +32,6 @@
  - TaskCard 가이드 구현
 
  ### 13주차
+ - TaskCard 제작 마무리
+ - 우선순위 뱃지 제작
+ - DetailCard 제작 및 구성 요소 제작

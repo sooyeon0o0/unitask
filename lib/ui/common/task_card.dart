@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:unitask/app/theme/preview.dart';
+import 'package:unitask/ui/common/subject_label.dart';
 
-@AppThemePreview(group: 'Items', name: 'TaskCard')
+@AppThemePreview(group: 'Cards', name: 'TaskCard')
 Widget preview() {
   return TaskCard(
     onChecked: (value) {},
     onSelected: () {},
-    checked: false,
-    title: 'Flutter 개발',
-    date: DateTime.now(),
-    category: Container(width: 30, height: 15, color: Colors.blue),
+    checked: true,
+    title: 'Unitask 끝내기',
+    date: DateTime.now().copyWith(month: 6, day: 1),
+    category: const SubjectLabel(text: 'Flutter'),
   );
 }
 
@@ -34,33 +36,71 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // <= D-3 :빨강
+    // <= D-7 :주황
+    // > D-7 :검정
+    final dDay = DateTime.now().difference(date).inDays;
+    final dDayColor = switch (dDay) {
+      >= 3 => Colors.red, // 3일 남음
+      >= 7 => Colors.orange, // 7일 남음
+      _ => Colors.black, // 기본
+    };
     return Card(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        spacing: 5,
-        children: [
-          Row(
-            mainAxisAlignment: .spaceBetween,
-            children: [
-              category,
-              Checkbox(onChanged: onChecked, value: checked),
-            ],
-          ),
-          Text(title),
-          Row(
-            spacing: 5,
-            children: [
-              const Icon(LucideIcons.calendar),
-              // TODO:아이콘 색상 설정은 아래와 같음
-              // =< D-3 :빨강
-              // =< D-7 :주황
-              // > D-7 :검정
-              Text(
-                '', //TODO: DateTime 사용, intal라이브러리 사용해서 TimeFormat 해야함
-              ),
-            ],
-          ),
-        ],
+      child: Container(
+        height: 120,
+        padding: const .symmetric(vertical: 6, horizontal: 12),
+        child: Column(
+          mainAxisAlignment: .spaceBetween,
+          crossAxisAlignment: .stretch,
+          spacing: 5,
+          children: [
+            // 과목 라벨 / 체크박스
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                category,
+                Checkbox(
+                  onChanged: onChecked,
+                  value: checked,
+                  visualDensity: .compact,
+                  activeColor: Colors.blue,
+
+                  fillColor: .resolveWith(
+                    (states) => states.contains(WidgetState.selected)
+                        ? Colors.blue
+                        : const Color(0xFFF3F4F6),
+                  ),
+                  // fillColor: .resolveWith((states) {
+                  //   if (states.contains(WidgetState.selected)) {
+                  //     return Colors.blue;
+                  //   }
+                  //   return const Color(0xFFF3F4F6);
+                  // }
+                  shape: RoundedRectangleBorder(borderRadius: .circular(5)),
+                  side: const BorderSide(color: Colors.transparent),
+                  materialTapTargetSize: .shrinkWrap,
+                ),
+              ],
+            ),
+            Text(
+              title,
+              overflow: .ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 15, fontWeight: .bold),
+            ),
+            Row(
+              spacing: 5,
+              children: [
+                Icon(LucideIcons.calendar, size: 16, color: dDayColor),
+
+                Text(
+                  DateFormat('yyyy.MM.dd').format(date),
+                  style: TextStyle(fontSize: 12, color: dDayColor),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

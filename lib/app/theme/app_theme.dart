@@ -77,10 +77,13 @@ class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: const Color(0xFF1F2937),
+      prefixIconColor: const Color(0xFF6B7280),
+      hintStyle: const TextStyle(color: Color(0xFF6B7280)),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
     ),
+    cardTheme: const CardThemeData(elevation: 4, color: Color(0xFF1F2937)),
   );
 }

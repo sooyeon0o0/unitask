@@ -11,7 +11,7 @@ Widget preview() {
     onSelected: () {},
     checked: true,
     title: 'Unitask 끝내기',
-    date: DateTime.now().copyWith(month: 6, day: 1),
+    date: DateTime.now().copyWith(month: 6, day: 11),
     category: const SubjectLabel(text: 'Flutter'),
   );
 }
@@ -41,8 +41,8 @@ class TaskCard extends StatelessWidget {
     // > D-7 :검정
     final dDay = DateTime.now().difference(date).inDays;
     final dDayColor = switch (dDay) {
-      >= 3 => Colors.red, // 3일 남음
-      >= 7 => Colors.orange, // 7일 남음
+      >= -3 => Colors.red, // 3일 남음
+      >= -7 => Colors.orange, // 7일 남음
       _ => Colors.black, // 기본
     };
     return Card(
